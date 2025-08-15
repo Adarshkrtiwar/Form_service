@@ -1,0 +1,30 @@
+{
+  "id": "customer_request",
+  "title": "Customer Service Request",
+  "cards": [
+    {
+      "id": "personal_info",
+      "title": "Personal Information",
+      "fields": [
+        {
+          "id": "firstName",
+          "type": "text",
+          "label": "First Name",
+          "validation": {"required": true, "min_length": 2}
+        },
+        {
+          "id": "lastName",
+          "type": "text",
+          "label": "Last Name",
+          "validation": {"required": true}
+        },
+        {
+          "id": "fullName",
+          "type": "computed",
+          "label": "Full Name",
+          "computation": "$.firstName + ' ' + $.lastName"
+        }
+      ]
+    }
+  ]
+}

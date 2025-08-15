@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Service UI</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; }
+    input, select { width: 100%; padding: 8px; box-sizing: border-box; }
+    button { padding: 10px 15px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Dynamic Form</h1>
+  <div id="form-container">
+    <p>Loading form schema...</p>
+  </div>
+
+  <script>
+    const schemaId = 'test-form'; // Change to your form ID
+    const apiBase = 'http://localhost:8000/api/v1';
+
+    // Load form schema
+    async function loadForm() {
+      try {
+        const response = await fetch(`${apiBase}/schemas/${schemaId}`);
+        const schema = await response.json();
+        renderForm(schema);
+      } catch (error) {
+        document.getElementById('form-container').innerHTML = `
+          <p style="color: red">Error loading form: ${error.message}</p>
+        `;
+      }
+    }
+
+    // Render form from schema
+    function renderForm(schema) {
+      let formHTML = `<form id="dynamic-form">`;
+      
+      schema.cards.forEach(card => {
+        formHTML += `<fieldset><legend>${card.title}</legend>`;
+        
+        card.fields.forEach(field => {
+          formHTML += `
+            <div class="form-group">
+              <label for="${field.id}">${field.label}</label>
+              ${getFieldHtml(field)}
+            </div>
+          `;
+        });
+        
+        formHTML += `</fieldset>`;
+      });
+      
+      formHTML += `<button type="submit">Submit</button></form>`;
+      document.getElementById('form-container').innerHTML = formHTML;
+      
+      // Add form submission handler
+      document.getElementById('dynamic-form').addEventListener('submit', handleSubmit);
+    }
+
+    // Generate HTML for different field types
+    function getFieldHtml(field) {
+      switch(field.type) {
+        case 'text':
+        case 'email':
+        case 'number':
+          return `<input type="${field.type}" id="${field.id}" name="${field.id}">`;
+        case 'select':
+          return `
+            <select id="${field.id}" name="${field.id}">
+              ${field.options.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('')}
+            </select>
+          `;
+        default:
+          return `<input type="text" id="${field.id}" name="${field.id}">`;
+      }
+    }
+
+    // Handle form submission
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const answers = Object.fromEntries(formData.entries());
+      
+      try {
+        const response = await fetch(`${apiBase}/forms/${schemaId}/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers })
+        });
+        
+        const result = await response.json();
+        alert(`Form submitted successfully! Submission ID: ${result.submission_id}`);
+      } catch (error) {
+        alert(`Error submitting form: ${error.message}`);
+      }
+    }
+
+    // Initialize
+    loadForm();
+  </script>
+</body>
+</html>
