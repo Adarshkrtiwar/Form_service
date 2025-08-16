@@ -23,7 +23,7 @@ A dynamic form schema and submission service with validation and verification.
 ### Install Dependencies
   ```bash
  pip install fastapi uvicorn sqlalchemy python-multipart
-
+pip install -r requirements.txt
 ### Initialize Database
 
 Add this to app/main.py
@@ -66,4 +66,8 @@ First create a sample form schema using POST request to /schemas with this body
     }
   ]
 }
+
+
+
+###  Then access the form at: http://localhost:8000/static/index.html
 
