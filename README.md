@@ -21,19 +21,17 @@ A dynamic form schema and submission service with validation and verification.
 
 
 ### Install Dependencies
-  ```bash
- pip install fastapi uvicorn sqlalchemy python-multipart
+  
+pip install fastapi uvicorn sqlalchemy python-multipart
 pip install -r requirements.txt
+
 ### Initialize Database
 
 Add this to app/main.py
- ```bash
-
 from app.models.database import Base, engine
 Base.metadata.create_all(bind=engine)
 
 ### Run the Application
- ```bash
 
 uvicorn app.main:app --reload
 
