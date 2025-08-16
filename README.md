@@ -37,3 +37,33 @@ Base.metadata.create_all(bind=engine)
 
 uvicorn app.main:app --reload
 
+
+### Testing with Sample Form
+First create a sample form schema using POST request to /schemas with this body
+
+
+{
+  "id": "test-form",
+  "title": "Test Form",
+  "cards": [
+    {
+      "id": "personal-info",
+      "title": "Personal Information",
+      "fields": [
+        {
+          "id": "name",
+          "type": "text",
+          "label": "Full Name",
+          "validation": {"required": true}
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "validation": {"required": true}
+        }
+      ]
+    }
+  ]
+}
+
